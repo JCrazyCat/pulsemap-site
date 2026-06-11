@@ -1,0 +1,10 @@
+# Apple's AASA CDN requires: 200 (no redirect), JSON content type, no auth.
+# Short cache so an entitlement/path change propagates within minutes.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=300
+
+# Venue share landing pages — never cache stale HTML at the edge for long;
+# the page itself is static and reads its state from query params.
+/v/*
+  Cache-Control: public, max-age=300

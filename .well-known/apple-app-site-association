@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["T5QFNMSHN5.com.pulsemap.app"],
+        "components": [
+          { "/": "/v/*", "comment": "Venue share links open the venue in the app" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["T5QFNMSHN5.com.pulsemap.app"]
+  }
+}

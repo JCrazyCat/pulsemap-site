@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PulseMap — See how busy it is right now</title>
+  <!-- Safari shows a native banner that deep-links into the app (or the
+       App Store) carrying the full share URL as app-argument. -->
+  <meta name="apple-itunes-app" content="app-id=6762500394">
+  <style>
+    :root { color-scheme: dark; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+      background: radial-gradient(ellipse at top, #0f1830 0%, #050608 70%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .wrap { max-width: 420px; }
+    .logo {
+      font-size: 28px; font-weight: 900; letter-spacing: 4px;
+      margin-bottom: 28px;
+    }
+    .logo span { color: #22d3ee; }
+    .venue-name {
+      font-size: 26px; font-weight: 800; line-height: 1.25;
+      margin: 0 0 10px; overflow-wrap: anywhere;
+    }
+    .tagline {
+      font-size: 16px; color: rgba(255,255,255,0.65);
+      margin: 0 0 32px; line-height: 1.5;
+    }
+    .pulse {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #22d3ee; display: inline-block; margin-right: 8px;
+      vertical-align: -1px;
+      animation: pulse 1.6s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(34,211,238,0.55); }
+      70%  { box-shadow: 0 0 0 14px rgba(34,211,238,0); }
+      100% { box-shadow: 0 0 0 0 rgba(34,211,238,0); }
+    }
+    .cta {
+      display: inline-block; text-decoration: none;
+      background: linear-gradient(135deg, #22d3ee, #6366f1);
+      color: #04060a; font-weight: 800; font-size: 17px;
+      padding: 16px 34px; border-radius: 999px;
+      box-shadow: 0 10px 36px rgba(34,211,238,0.35);
+    }
+    .open-app {
+      display: block; margin-top: 18px; font-size: 15px;
+      color: #22d3ee; text-decoration: none; font-weight: 600;
+    }
+    .foot {
+      margin-top: 48px; font-size: 12px; color: rgba(255,255,255,0.35);
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">PULSE<span>MAP</span></div>
+    <h1 class="venue-name" id="venueName">This place</h1>
+    <p class="tagline"><span class="pulse"></span>See how busy this place is right now — live, from people who are actually there.</p>
+    <a class="cta" id="storeLink" href="https://apps.apple.com/app/id6762500394">Get PulseMap</a>
+    <a class="open-app" id="openApp" hidden href="#">Already have the app? Open it</a>
+    <div class="foot">Real-time crowd intelligence</div>
+  </div>
+  <script>
+    // Static page: all state comes from the share URL itself. No backend call.
+    // Path:  /v/<venueID>   Query: ll=<lat>,<lon>  n=<name>  src=<channel>
+    (function () {
+      var params = new URLSearchParams(location.search);
+
+      var name = params.get("n");
+      if (name) {
+        // textContent (never innerHTML) — the param is attacker-controlled.
+        document.getElementById("venueName").textContent =
+          name.slice(0, 80);
+        document.title = name.slice(0, 80) + " — how busy is it right now? | PulseMap";
+      }
+
+      // Recipients who already have the app but landed in a browser context
+      // that bypassed universal links (e.g. some in-app browsers) get a
+      // visible custom-scheme escape hatch instead of a dead end.
+      var m = location.pathname.match(/^\/v\/([A-Za-z0-9._~-]{1,128})/);
+      if (m) {
+        var openApp = document.getElementById("openApp");
+        openApp.href = "pulsemap://venue/" + encodeURIComponent(m[1]) +
+                       (location.search ? location.search : "");
+        openApp.hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>

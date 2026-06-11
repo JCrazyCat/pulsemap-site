@@ -1,0 +1,4 @@
+# 200 = internal rewrite (NOT a redirect) — Apple requires universal-link
+# paths to resolve without redirects, and recipients without the app get the
+# venue landing page at the same URL.
+/v/* /venue 200
